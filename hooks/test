@@ -2,6 +2,6 @@
 
 . ./hooks/env
 
-docker run -it --rm --entrypoint /usr/bin/aws ${IMAGE_NAME} --version
-docker run -it --rm --entrypoint /usr/bin/grepcidr ${IMAGE_NAME} -V | grep -F 'grepcidr 2.0'
-docker run -it --rm --entrypoint /usr/bin/curl ${IMAGE_NAME} --version
+docker run --rm --entrypoint /usr/bin/aws ${IMAGE_NAME} --version
+docker run --rm --entrypoint /usr/bin/grepcidr ${IMAGE_NAME} -V | grep -F 'grepcidr 2.0'
+docker run --rm --entrypoint /usr/bin/curl ${IMAGE_NAME} --version
