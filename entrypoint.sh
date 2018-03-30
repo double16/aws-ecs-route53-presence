@@ -1,6 +1,9 @@
 #!/bin/sh
 
-[ -n "${DEBUG}" ] && set -x
+if [ -n "${DEBUG}" ]; then
+    set -x
+    env
+fi
 
 if [ -z "${HOSTED_ZONE_ID}" -o -z "${DNS_NAME}" ]; then
     echo "HOSTED_ZONE_ID and DNS_NAME are required" >&2
