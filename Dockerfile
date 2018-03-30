@@ -6,16 +6,20 @@ RUN cd /tmp &&\
     cd /tmp/grepcidr &&\
     make grepcidr
 
-FROM cgswong/aws:aws
+FROM alpine:3.7
 
 ARG BUILD_DATE
 ARG SOURCE_REF
 ARG SOURCE_TYPE
 
-RUN apk add --no-cache jq curl
+RUN apk add --no-cache jq curl py-pip python openssh &&\
+    pip install --upgrade awscli pip &&\
+    rm -rf /tmp/* &&\
+    mkdir /root/.aws && chmod 700 /root/.aws
+
+COPY --from=0 /tmp/grepcidr/grepcidr /usr/bin/grepcidr
 
 WORKDIR /
-COPY --from=0 /tmp/grepcidr/grepcidr /usr/bin/grepcidr
 ADD entrypoint.sh *.json /
 ENV ADDRESS_CIDR=0.0.0.0/0 ADDRESS_CIDR6=::/0
 

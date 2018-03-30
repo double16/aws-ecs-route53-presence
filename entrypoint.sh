@@ -11,12 +11,19 @@ fi
 if [ -f /root/.aws/credentials ]; then
     echo "Authenticating using /root/.aws/credentials"
 elif [ -n "${AWS_ACCESS_KEY_ID}" -a -n "${AWS_SECRET_ACCESS_KEY}" ]; then
-    echo "Authenticating using /root/.aws/credentials"
-else
-    echo "Authenticating using container credentials"
-    /usr/bin/curl -sf http://169.254.170.2${AWS_CONTAINER_CREDENTIALS_RELATIVE_URI} > /tmp/credentials.json || exit 7
+    echo "Authenticating using environment variables"
+elif [ -n "${AWS_CONTAINER_CREDENTIALS_RELATIVE_URI}" ]; then
+    echo "Authenticating using container credentials at ${AWS_CONTAINER_CREDENTIALS_RELATIVE_URI}"
+    /usr/bin/curl -f http://169.254.170.2${AWS_CONTAINER_CREDENTIALS_RELATIVE_URI} > /tmp/credentials.json || exit 7
     export AWS_ACCESS_KEY_ID="$(cat /tmp/credentials.json | jq -r .AccessKeyId)"
     export AWS_SECRET_ACCESS_KEY="$(cat /tmp/credentials.json | jq -r .SecretAccessKey)"
+elif [ -n "${AWS_CONTAINER_CREDENTIALS_FULL_URI}" ]; then
+    echo "Authenticating using container credentials at ${AWS_CONTAINER_CREDENTIALS_FULL_URI}"
+    /usr/bin/curl -f ${AWS_CONTAINER_CREDENTIALS_FULL_URI} > /tmp/credentials.json || exit 8
+    export AWS_ACCESS_KEY_ID="$(cat /tmp/credentials.json | jq -r .AccessKeyId)"
+    export AWS_SECRET_ACCESS_KEY="$(cat /tmp/credentials.json | jq -r .SecretAccessKey)"
+else
+    echo "Authentication method unknown"
 fi
 
 # Get all of the possible IP addresses
