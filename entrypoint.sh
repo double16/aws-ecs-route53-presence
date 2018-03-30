@@ -10,7 +10,7 @@ fi
 # Figure out how we're going to authenticate
 if [ -f /root/.aws/credentials ]; then
     echo "Authenticating using /root/.aws/credentials"
-elif [ -n "${AWS_ACCESS_KEY_ID}" -a =n "${AWS_SECRET_ACCESS_KEY}" ]; then
+elif [ -n "${AWS_ACCESS_KEY_ID}" -a -n "${AWS_SECRET_ACCESS_KEY}" ]; then
     echo "Authenticating using /root/.aws/credentials"
 else
     echo "Authenticating using container credentials"
