@@ -5,6 +5,18 @@ if [ -z "${HOSTED_ZONE_ID}" -o -z "${DNS_NAME}" ]; then
     exit 2
 fi
 
+# Figure out how we're going to authenticate
+if [ -f /root/.aws/credentials ]; then
+    echo "Authenticating using /root/.aws/credentials"
+elif [ -n "${AWS_ACCESS_KEY_ID}" -a =n "${AWS_SECRET_ACCESS_KEY}" ]; then
+    echo "Authenticating using /root/.aws/credentials"
+else
+    echo "Authenticating using container credentials"
+    curl -sf 169.254.170.2${AWS_CONTAINER_CREDENTIALS_RELATIVE_URI} > /tmp/credentials.json || exit 7
+    export AWS_ACCESS_KEY_ID="$(cat /tmp/credentials.json | jq -r .AccessKeyId)"
+    export AWS_SECRET_ACCESS_KEY="$(cat /tmp/credentials.json | jq -r .SecretAccessKey)"
+fi
+
 # Get all of the possible IP addresses
 ip -o addr show | grep -v 'loopback\|scope host lo' | grep -oE 'inet6?\s+[^\s/]+' | cut -d ' ' -f 2 > /tmp/ips.txt
 
