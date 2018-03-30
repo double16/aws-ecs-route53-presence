@@ -12,7 +12,7 @@ ARG BUILD_DATE
 ARG SOURCE_REF
 ARG SOURCE_TYPE
 
-RUN apk add --no-cache jq
+RUN apk add --no-cache jq curl
 
 WORKDIR /
 COPY --from=0 /tmp/grepcidr/grepcidr /usr/bin/grepcidr

@@ -12,7 +12,7 @@ elif [ -n "${AWS_ACCESS_KEY_ID}" -a =n "${AWS_SECRET_ACCESS_KEY}" ]; then
     echo "Authenticating using /root/.aws/credentials"
 else
     echo "Authenticating using container credentials"
-    curl -sf 169.254.170.2${AWS_CONTAINER_CREDENTIALS_RELATIVE_URI} > /tmp/credentials.json || exit 7
+    /usr/bin/curl -sf 169.254.170.2${AWS_CONTAINER_CREDENTIALS_RELATIVE_URI} > /tmp/credentials.json || exit 7
     export AWS_ACCESS_KEY_ID="$(cat /tmp/credentials.json | jq -r .AccessKeyId)"
     export AWS_SECRET_ACCESS_KEY="$(cat /tmp/credentials.json | jq -r .SecretAccessKey)"
 fi
