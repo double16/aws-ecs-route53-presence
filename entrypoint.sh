@@ -10,32 +10,6 @@ if [ -z "${HOSTED_ZONE_ID}" -o -z "${DNS_NAME}" ]; then
     exit 2
 fi
 
-# Figure out how we're going to authenticate
-if [ -f /root/.aws/credentials ]; then
-    echo "Authenticating using /root/.aws/credentials"
-elif [ -n "${AWS_ACCESS_KEY_ID}" -a -n "${AWS_SECRET_ACCESS_KEY}" ]; then
-    echo "Authenticating using environment variables"
-#elif [ -n "${AWS_CONTAINER_CREDENTIALS_RELATIVE_URI}" ]; then
-#    echo "Authenticating using container credentials at ${AWS_CONTAINER_CREDENTIALS_RELATIVE_URI}"
-#    /usr/bin/curl -f http://169.254.170.2${AWS_CONTAINER_CREDENTIALS_RELATIVE_URI} > /tmp/credentials.json || exit 7
-#    [ -n "${DEBUG}" ] && cat /tmp/credentials.json
-#    export AWS_ACCESS_KEY_ID="$(cat /tmp/credentials.json | jq -r .AccessKeyId)"
-#    export AWS_SECRET_ACCESS_KEY="$(cat /tmp/credentials.json | jq -r .SecretAccessKey)"
-#elif [ -n "${AWS_CONTAINER_CREDENTIALS_FULL_URI}" ]; then
-#    echo "Authenticating using container credentials at ${AWS_CONTAINER_CREDENTIALS_FULL_URI}"
-#    /usr/bin/curl -f ${AWS_CONTAINER_CREDENTIALS_FULL_URI} > /tmp/credentials.json || exit 8
-#    [ -n "${DEBUG}" ] && cat /tmp/credentials.json
-#    export AWS_ACCESS_KEY_ID="$(cat /tmp/credentials.json | jq -r .AccessKeyId)"
-#    export AWS_SECRET_ACCESS_KEY="$(cat /tmp/credentials.json | jq -r .SecretAccessKey)"
-#elif /usr/bin/curl -f http://169.254.169.254/latest/meta-data/iam/security-credentials/ > /tmp/credentials.json; then
-#    echo "Authenticating using EC2 metadata credentials at http://169.254.169.254/latest/meta-data/iam/security-credentials/"
-#    [ -n "${DEBUG}" ] && cat /tmp/credentials.json
-#    export AWS_ACCESS_KEY_ID="$(cat /tmp/credentials.json | jq -r .AccessKeyId)"
-#    export AWS_SECRET_ACCESS_KEY="$(cat /tmp/credentials.json | jq -r .SecretAccessKey)"
-else
-    echo "Authentication chosen by CLI"
-fi
-
 # Get all of the possible IP addresses
 ip -o addr show | grep -v 'loopback\|scope host lo' | grep -oE 'inet6?\s+[^\s/]+' | cut -d ' ' -f 2 > /tmp/ips.txt
 
