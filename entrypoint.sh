@@ -28,7 +28,7 @@ elif [ -n "${AWS_CONTAINER_CREDENTIALS_FULL_URI}" ]; then
     export AWS_ACCESS_KEY_ID="$(cat /tmp/credentials.json | jq -r .AccessKeyId)"
     export AWS_SECRET_ACCESS_KEY="$(cat /tmp/credentials.json | jq -r .SecretAccessKey)"
 elif /usr/bin/curl -f http://169.254.169.254/latest/meta-data/iam/security-credentials/ > /tmp/credentials.json; then
-    echo "Authenticating using EC2 metadata credentials at https://169.254.169.254/latest/meta-data/iam/security-credentials/"
+    echo "Authenticating using EC2 metadata credentials at http://169.254.169.254/latest/meta-data/iam/security-credentials/"
     [ -n "${DEBUG}" ] && cat /tmp/credentials.json
     export AWS_ACCESS_KEY_ID="$(cat /tmp/credentials.json | jq -r .AccessKeyId)"
     export AWS_SECRET_ACCESS_KEY="$(cat /tmp/credentials.json | jq -r .SecretAccessKey)"
