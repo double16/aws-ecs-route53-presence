@@ -47,8 +47,9 @@ function deregister {
     echo "Unregistering ${ADDR} from ${DNS_NAME}.${ZONE_NAME}"
     cat /tmp/unregister.json
     aws --output json ${DEBUG:+--debug} route53 change-resource-record-sets --cli-input-json file:///tmp/unregister.json
+    rm /tmp/registered.txt
 }
-trap deregister EXIT
+trap deregister EXIT TERM
 
 ZONE_NAME="$(aws --output json route53 get-hosted-zone --id=${HOSTED_ZONE_ID}  | jq -r .HostedZone.Name)"
 if [ -z "${ZONE_NAME}" ]; then
